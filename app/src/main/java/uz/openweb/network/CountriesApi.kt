@@ -16,4 +16,3 @@ val retrofit: Retrofit = Retrofit.Builder()
     .build()
 
 val countriesApi: CountriesApi = retrofit.create(CountriesApi::class.java)
-

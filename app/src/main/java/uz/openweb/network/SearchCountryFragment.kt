@@ -46,7 +46,7 @@ class SearchCountryFragment : Fragment(), CountryHelper {
 
     }
 
-    private fun addFragment(fragment: Fragment){
+    private fun addFragment(fragment: Fragment) {
 
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.main_container, fragment)

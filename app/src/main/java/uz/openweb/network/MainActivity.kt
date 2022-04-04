@@ -23,9 +23,8 @@ class MainActivity : AppCompatActivity() {
         _binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
 
-        supportFragmentManager.beginTransaction().replace(R.id.main_container, HomeFragment()).commit()
+        supportFragmentManager.beginTransaction().replace(R.id.main_container, HomeFragment())
+            .commit()
     }
-
-
 
 }

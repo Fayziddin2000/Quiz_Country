@@ -14,12 +14,17 @@ import androidx.lifecycle.lifecycleScope
 import countriesApi
 import kotlinx.coroutines.launch
 import uz.openweb.network.databinding.FragmentQuizBinding
+import kotlin.random.Random
 
 class QuizFragment : Fragment() {
 
     private lateinit var _binding: FragmentQuizBinding
     private val mBinding get() = _binding
     private var country: Country? = null
+    private var wrong1: Country? = null
+    private var wrong2: Country? = null
+    private var wrong3: Country? = null
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,7 +61,7 @@ class QuizFragment : Fragment() {
             mBinding.tvCallingCodesQuiz.text =
                 getString(R.string.text_phone, country!!.callingCodes)
         } else getRandomCountry()
-        mBinding.animQuiz.addAnimatorListener(object : Animator.AnimatorListener{
+        mBinding.animQuiz.addAnimatorListener(object : Animator.AnimatorListener {
             override fun onAnimationStart(p0: Animator?) {
 
             }
@@ -68,25 +73,36 @@ class QuizFragment : Fragment() {
             override fun onAnimationCancel(p0: Animator?) {
 
             }
+
             override fun onAnimationRepeat(p0: Animator?) {
                 mBinding.animQuiz.pauseAnimation()
                 mBinding.animQuiz.isVisible = false
             }
 
         })
-        mBinding.btnAnswer.setOnClickListener { compareCountryNames(mBinding.etCountryQuiz.text.toString()) }
+        mBinding.btnAnswer1.setOnClickListener { compareCountryNames(mBinding.btnAnswer1.text.toString()) }
+        mBinding.btnAnswer2.setOnClickListener { compareCountryNames(mBinding.btnAnswer2.text.toString()) }
+        mBinding.btnAnswer3.setOnClickListener { compareCountryNames(mBinding.btnAnswer3.text.toString()) }
+        mBinding.btnAnswer4.setOnClickListener { compareCountryNames(mBinding.btnAnswer4.text.toString()) }
         mBinding.btnNext.setOnClickListener { getRandomCountry() }
     }
 
     private fun getRandomCountry() {
-        val connectivityManager: ConnectivityManager = requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+
+        val connectivityManager: ConnectivityManager =
+            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (connectivityManager.isActiveNetworkMetered)
-        lifecycleScope.launch {
-            val countries = countriesApi.getCountry()
-            country = countries[(0..countries.size).shuffled()[0]]
-            initView()
-        }
-        else Toast.makeText(requireContext(), " iltimos inet yoqing", Toast.LENGTH_SHORT).show()
+            lifecycleScope.launch {
+                val countries = countriesApi.getCountry()
+                country = countries[(0..countries.size).shuffled()[0]]
+                wrong1 = countries[(0..countries.size).shuffled()[0]]
+                wrong2 = countries[(0..countries.size).shuffled()[0]]
+                wrong3 = countries[(0..countries.size).shuffled()[0]]
+                initView()
+                answerRandom()
+            }
+        else Toast.makeText(requireContext(), "Iltimos iternetni yoqing!", Toast.LENGTH_SHORT)
+            .show()
 
     }
 
@@ -102,4 +118,52 @@ class QuizFragment : Fragment() {
             getRandomCountry()
         }
     }
+
+    private fun answerRandom() {
+        when (Random.nextInt(0, 3)) {
+            0 -> {
+                mBinding.btnAnswer1.text = country!!.name
+                if (wrong1 != country || wrong2 != country || wrong3 != country) {
+                    mBinding.btnAnswer2.text = wrong1!!.name
+                    mBinding.btnAnswer3.text = wrong2!!.name
+                    mBinding.btnAnswer4.text = wrong3!!.name
+                } else {
+                    getRandomCountry()
+                }
+            }
+            1 -> {
+                mBinding.btnAnswer2.text = country!!.name
+                if (wrong1 != country || wrong2 != country || wrong3 != country) {
+                    mBinding.btnAnswer1.text = wrong1!!.name
+                    mBinding.btnAnswer3.text = wrong2!!.name
+                    mBinding.btnAnswer4.text = wrong3!!.name
+                } else {
+                    getRandomCountry()
+                }
+            }
+            2 -> {
+                mBinding.btnAnswer3.text = country!!.name
+                if (wrong1 != country || wrong2 != country || wrong3 != country) {
+                    mBinding.btnAnswer1.text = wrong1!!.name
+                    mBinding.btnAnswer2.text = wrong2!!.name
+                    mBinding.btnAnswer4.text = wrong3!!.name
+                } else {
+                    getRandomCountry()
+                }
+            }
+            3 -> {
+                mBinding.btnAnswer4.text = country!!.name
+                if (wrong1 != country || wrong2 != country || wrong3 != country) {
+                    mBinding.btnAnswer1.text = wrong1!!.name
+                    mBinding.btnAnswer2.text = wrong2!!.name
+                    mBinding.btnAnswer3.text = wrong3!!.name
+                } else {
+                    getRandomCountry()
+                }
+            }
+
+        }
+
+    }
+
 }
