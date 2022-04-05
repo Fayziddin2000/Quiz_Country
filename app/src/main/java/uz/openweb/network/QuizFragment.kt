@@ -43,7 +43,7 @@ class QuizFragment : Fragment() {
     private fun initView() {
         if (country != null) {
             mBinding.tvCapitalQuiz.text = getString(R.string.text_capital, country!!.capital)
-            mBinding.tvAreaQuiz.text = getString(R.string.text_area, country!!.area.toString())
+            mBinding.tvAreaQuiz.text = getString(R.string.text_area, country!!.area)
 
             val borders = StringBuilder()
             if (country!!.borders.isNullOrEmpty()) mBinding.tvBordersQuiz.text =
