@@ -24,26 +24,28 @@ class QuizFragment : Fragment() {
     private var wrong1: Country? = null
     private var wrong2: Country? = null
     private var wrong3: Country? = null
-
+    private var numb: Int? = 1
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentQuizBinding.inflate(layoutInflater, container, false)
 
+
+        _binding = FragmentQuizBinding.inflate(layoutInflater, container, false)
         return mBinding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        getRandomCountry()
 
+        getRandomCountry()
     }
 
     private fun initView() {
         if (country != null) {
+
             mBinding.tvCapitalQuiz.text = getString(R.string.text_capital, country!!.capital)
-            mBinding.tvAreaQuiz.text = getString(R.string.text_area, country!!.area)
+            mBinding.tvAreaQuiz.text = getString(R.string.text_area, country!!.area.toString())
 
             val borders = StringBuilder()
             if (country!!.borders.isNullOrEmpty()) mBinding.tvBordersQuiz.text =
@@ -85,25 +87,31 @@ class QuizFragment : Fragment() {
         mBinding.btnAnswer3.setOnClickListener { compareCountryNames(mBinding.btnAnswer3.text.toString()) }
         mBinding.btnAnswer4.setOnClickListener { compareCountryNames(mBinding.btnAnswer4.text.toString()) }
         mBinding.btnNext.setOnClickListener { getRandomCountry() }
+        mBinding.tvQuiz.text = getString(R.string.text_quiz, numb!!.toString())
+        numb = numb!! + 1
     }
 
     private fun getRandomCountry() {
+        if (numb!! > 20) {
+            requireActivity().supportFragmentManager.beginTransaction()
+                .replace(R.id.main_container, EndQuizFragment(), EndQuizFragment::javaClass.name).commit()
+        }else {
+            val connectivityManager: ConnectivityManager =
+                requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            if (connectivityManager.isActiveNetworkMetered)
+                lifecycleScope.launch {
+                    val countries = countriesApi.getCountry()
+                    country = countries[(0..countries.size).shuffled()[0]]
+                    wrong1 = countries[(0..countries.size).shuffled()[0]]
+                    wrong2 = countries[(0..countries.size).shuffled()[0]]
+                    wrong3 = countries[(0..countries.size).shuffled()[0]]
+                    initView()
+                    answerRandom()
+                }
+            else Toast.makeText(requireContext(), "Iltimos iternetni yoqing!", Toast.LENGTH_SHORT)
+                .show()
 
-        val connectivityManager: ConnectivityManager =
-            requireContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        if (connectivityManager.isActiveNetworkMetered)
-            lifecycleScope.launch {
-                val countries = countriesApi.getCountry()
-                country = countries[(0..countries.size).shuffled()[0]]
-                wrong1 = countries[(0..countries.size).shuffled()[0]]
-                wrong2 = countries[(0..countries.size).shuffled()[0]]
-                wrong3 = countries[(0..countries.size).shuffled()[0]]
-                initView()
-                answerRandom()
-            }
-        else Toast.makeText(requireContext(), "Iltimos iternetni yoqing!", Toast.LENGTH_SHORT)
-            .show()
-
+        }
     }
 
     private fun compareCountryNames(inputName: String) {

@@ -18,6 +18,28 @@
         app:layout_constraintTop_toTopOf="parent"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/anim_con" />
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cv_quiz"
+        android:layout_width="70dp"
+        android:layout_height="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="18dp"
+        android:layout_marginEnd="20dp"
+        app:cardCornerRadius="10dp"
+        app:cardBackgroundColor="#A7A7A7"
+        >
+        <TextView
+            android:id="@+id/tv_quiz"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            tools:text="12/20"
+            android:textColor="@android:color/white"
+            android:textStyle="bold"
+            android:textSize="16sp"
+            />
+    </com.google.android.material.card.MaterialCardView>
 
     <TextView
         android:id="@+id/tv_capital_quiz"
